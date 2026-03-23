@@ -3,15 +3,12 @@ import QtQuick.Layouts
 
 Item {
     id: root
-    required property var screen
 
-    // ── Background ────────────────────────────────────────────
     Rectangle {
         anchors.fill: parent
         color: "transparent"
     }
 
-    // ── Three-region layout ───────────────────────────────────
     RowLayout {
         anchors {
             fill: parent
@@ -22,7 +19,6 @@ Item {
         }
         spacing: 0
 
-        // LEFT — workspaces + window title
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -30,11 +26,9 @@ Item {
             WorkspacesPill {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                screen: root.screen
             }
         }
 
-        // CENTER — music + clock
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -48,7 +42,6 @@ Item {
             }
         }
 
-        // RIGHT — stats + audio
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true

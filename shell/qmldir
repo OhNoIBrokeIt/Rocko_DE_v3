@@ -1,0 +1,12 @@
+module Rocko
+singleton Colors 1.0 Colors.qml
+TopBar 1.0 TopBar.qml
+Pill 1.0 Pill.qml
+WorkspacesPill 1.0 WorkspacesPill.qml
+ClockPill 1.0 ClockPill.qml
+MusicPill 1.0 MusicPill.qml
+SystemStatsPill 1.0 SystemStatsPill.qml
+AudioPill 1.0 AudioPill.qml
+AudioPanel 1.0 AudioPanel.qml
+PowerPanel 1.0 PowerPanel.qml
+KeybindsPanel 1.0 KeybindsPanel.qml

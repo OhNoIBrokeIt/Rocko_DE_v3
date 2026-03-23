@@ -3,60 +3,44 @@ import QtQuick.Layouts
 import Quickshell.Hyprland
 
 Pill {
-    id: root
-
-    required property var screen
-
-    hPad: 8
-    vPad: 6
+    hPad: 12
+    vPad: 10
 
     RowLayout {
-        spacing: 4
+        spacing: 7
 
         Repeater {
-            model: Hyprland.workspaces
+            model: 9
 
             delegate: Rectangle {
-                required property var modelData
+                required property int index
+                readonly property int wsId: index + 1
+                readonly property bool isActive: wsId === Hyprland.focusedMonitor?.activeWorkspace?.id
+                readonly property bool exists: Hyprland.workspaces.values.some(w => w.id === wsId)
+                readonly property bool hasWindows: {
+                    const ws = Hyprland.workspaces.values.find(w => w.id === wsId)
+                    return ws ? ws.clientCount > 0 : false
+                }
 
-                readonly property bool isActive:  modelData.id === Hyprland.focusedMonitor?.activeWorkspace?.id
-                readonly property bool hasWindows: modelData.windowCount > 0
+                width:  isActive ? 24 : 8
+                height: 8
+                radius: 4
 
-                width:  isActive ? 28 : 10
-                height: 10
-                radius: 5
+                opacity: exists ? 1.0 : 0.2
 
-                color: isActive
-                    ? Colors.primary
-                    : hasWindows
-                        ? Colors.pillMuted
-                        : Qt.rgba(Colors.onSurface.r, Colors.onSurface.g, Colors.onSurface.b, 0.15)
+                color: isActive   ? Colors.primary
+                     : hasWindows ? Colors.pillMuted
+                     :              Colors.pillBorder
 
-                Behavior on width  { NumberAnimation  { duration: 200; easing.type: Easing.OutCubic } }
-                Behavior on color  { ColorAnimation   { duration: 200 } }
+                Behavior on width   { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 150 } }
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: Hyprland.dispatch("workspace " + modelData.id)
+                    onClicked: Hyprland.dispatch("workspace " + wsId)
                     cursorShape: Qt.PointingHandCursor
                 }
             }
         }
-    }
-
-    // Window title — only show on focused monitor
-    Text {
-        visible: root.screen?.name === Hyprland.focusedMonitor?.name
-        text: {
-            const win = Hyprland.focusedClient
-            if (!win || !win.title) return ""
-            const t = win.title
-            return t.length > 40 ? t.slice(0, 38) + "…" : t
-        }
-        color:    Colors.pillText
-        font.pixelSize: 13
-        font.family: "JetBrainsMono Nerd Font"
-        leftPadding: 8
-        opacity: 0.85
     }
 }

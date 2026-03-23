@@ -1,34 +1,31 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 
-Pill {
-    hPad: 14
+Item {
+    implicitWidth: pill.implicitWidth
+    implicitHeight: pill.implicitHeight
 
-    ColumnLayout {
-        spacing: 0
+    Pill {
+        id: pill
+        anchors.fill: parent
+        hPad: 16
 
         Text {
             id: timeTxt
-            Layout.alignment: Qt.AlignHCenter
-            text: Qt.formatTime(new Date(), "hh:mm")
+            text: Qt.formatTime(new Date(), "hh:mm") + "  " + Qt.formatDate(new Date(), "ddd, MMM d")
             color: Colors.pillText
-            font.pixelSize: 15
-            font.weight: Font.Bold
-            font.family: "JetBrainsMono Nerd Font"
-        }
-
-        Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: Qt.formatDate(new Date(), "ddd, MMM d")
-            color: Colors.pillMuted
-            font.pixelSize: 11
+            font.pixelSize: 16
+            font.weight: Font.Medium
             font.family: "JetBrainsMono Nerd Font"
         }
     }
 
-    SystemClock {
-        precision: SystemClock.Minutes
-        onTimeChanged: timeTxt.text = Qt.formatTime(new Date(), "hh:mm")
+    Timer {
+        interval: 10000
+        repeat: true
+        running: true
+        onTriggered: {
+            timeTxt.text = Qt.formatTime(new Date(), "hh:mm") + "  " + Qt.formatDate(new Date(), "ddd, MMM d")
+        }
     }
 }

@@ -8,31 +8,20 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
 
-        PersistentWindow {
+        PanelWindow {
             required property var modelData
-            readonly property var screen: modelData
 
             screen: modelData
             visible: true
+            implicitHeight: 56
 
-            anchors {
-                top: true
-                left: true
-                right: true
-            }
-
-            height: 48
-            exclusiveZone: 48
-            layer: "top"
+            anchors.top: true
+            anchors.left: true
+            anchors.right: true
 
             TopBar {
                 anchors.fill: parent
-                screen: parent.screen
             }
         }
     }
-
-    AudioPanel {}
-    PowerPanel {}
-    KeybindsPanel {}
 }

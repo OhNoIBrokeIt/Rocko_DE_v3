@@ -2,15 +2,12 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 
-Pill {
-    id: root
-
-    visible: !!activePlayer
-    hPad: 10
-    vPad: 6
+Item {
+    implicitWidth: pill.implicitWidth
+    implicitHeight: pill.implicitHeight
 
     readonly property MprisPlayer activePlayer: {
-        const players = MprisController.players
+        const players = Mpris.players
         for (let i = 0; i < players.values.length; i++) {
             const p = players.values[i]
             if (p.playbackState === MprisPlaybackState.Playing) return p
@@ -18,81 +15,100 @@ Pill {
         return players.values.length > 0 ? players.values[0] : null
     }
 
-    RowLayout {
-        spacing: 8
+    visible: !!activePlayer
 
-        // ── Album art ─────────────────────────────────────────
-        Rectangle {
-            width: 28; height: 28
-            radius: 6
-            color: Colors.surfaceVariant
-            clip: true
+    Pill {
+        id: pill
+        anchors.fill: parent
+        hPad: 10
+        vPad: 6
 
-            Image {
-                anchors.fill: parent
-                source: root.activePlayer?.metadata?.artUrl ?? ""
-                fillMode: Image.PreserveAspectCrop
-                visible: status === Image.Ready
-            }
-
-            Text {
-                anchors.centerIn: parent
-                text: "󰎆"
-                color: Colors.pillMuted
-                font.pixelSize: 14
-                font.family: "JetBrainsMono Nerd Font"
-                visible: parent.children[0].status !== Image.Ready
-            }
-        }
-
-        // ── Track info ────────────────────────────────────────
-        ColumnLayout {
-            spacing: 1
-            Layout.maximumWidth: 220
-
-            Text {
-                id: titleTxt
-                Layout.fillWidth: true
-                text: root.activePlayer?.metadata?.title ?? ""
-                color: Colors.pillText
-                font.pixelSize: 13
-                font.weight: Font.Medium
-                font.family: "JetBrainsMono Nerd Font"
-                elide: Text.ElideRight
-            }
-
-            Text {
-                Layout.fillWidth: true
-                text: root.activePlayer?.metadata?.artist ?? ""
-                color: Colors.pillMuted
-                font.pixelSize: 11
-                font.family: "JetBrainsMono Nerd Font"
-                elide: Text.ElideRight
-            }
-        }
-
-        // ── Controls ──────────────────────────────────────────
         RowLayout {
-            spacing: 2
+            spacing: 8
 
-            Repeater {
-                model: [
-                    { icon: "󰒮", action: function() { root.activePlayer?.previous() } },
-                    { icon: root.activePlayer?.playbackState === MprisPlaybackState.Playing ? "󰏤" : "󰐊",
-                      action: function() { root.activePlayer?.togglePlaying() } },
-                    { icon: "󰒭", action: function() { root.activePlayer?.next() } }
-                ]
+            Rectangle {
+                width: 28; height: 28
+                radius: 6
+                color: Colors.surfaceVariant
+                clip: true
 
-                delegate: Text {
-                    required property var modelData
-                    text: modelData.icon
+                Image {
+                    anchors.fill: parent
+                    source: activePlayer?.trackArtUrl ?? ""
+                    fillMode: Image.PreserveAspectCrop
+                    visible: status === Image.Ready
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "󰎆"
+                    color: Colors.pillMuted
+                    font.pixelSize: 14
+                    font.family: "JetBrainsMono Nerd Font"
+                    visible: parent.children[0].status !== Image.Ready
+                }
+            }
+
+            ColumnLayout {
+                spacing: 1
+                Layout.maximumWidth: 220
+
+                Text {
+                    Layout.fillWidth: true
+                    text: activePlayer?.trackTitle ?? ""
+                    color: Colors.pillText
+                    font.pixelSize: 15
+                    font.weight: Font.Medium
+                    font.family: "JetBrainsMono Nerd Font"
+                    elide: Text.ElideRight
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: activePlayer?.trackArtist ?? ""
+                    color: Colors.pillMuted
+                    font.pixelSize: 11
+                    font.family: "JetBrainsMono Nerd Font"
+                    elide: Text.ElideRight
+                }
+            }
+
+            RowLayout {
+                spacing: 2
+
+                Text {
+                    text: "󰒮"
                     color: Colors.secondary
-                    font.pixelSize: 16
+                    font.pixelSize: 18
                     font.family: "JetBrainsMono Nerd Font"
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: modelData.action()
+                        onClicked: activePlayer?.previous()
+                    }
+                }
+
+                Text {
+                    text: activePlayer?.playbackState === MprisPlaybackState.Playing ? "󰏤" : "󰐊"
+                    color: Colors.secondary
+                    font.pixelSize: 18
+                    font.family: "JetBrainsMono Nerd Font"
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: activePlayer?.togglePlaying()
+                    }
+                }
+
+                Text {
+                    text: "󰒭"
+                    color: Colors.secondary
+                    font.pixelSize: 18
+                    font.family: "JetBrainsMono Nerd Font"
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: activePlayer?.next()
                     }
                 }
             }
